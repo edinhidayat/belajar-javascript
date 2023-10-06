@@ -2,31 +2,35 @@ let inputSearch = document.querySelector(".search-input");
 let btnSearch = document.querySelector(".search-button");
 
 $(btnSearch).on("click", function () {
-  $.ajax({
-    url: "http://www.omdbapi.com/?apikey=386856b4&s=" + $(inputSearch).val(),
-    success: (response) => {
-      const movies = response.Search;
-      let listMovies = "";
-      movies.forEach((m) => {
-        listMovies += daftarMovies(m);
-      });
-      $(".list-movies").html(listMovies);
-
-      $(".detail-button").on("click", function () {
-        $.ajax({
-          url:
-            "http://www.omdbapi.com/?apikey=386856b4&i=" +
-            $(this).data("imdbid"),
-          success: (m) => {
-            const movieDetail = showMovieDetail(m);
-            $(".modal-body").html(movieDetail);
-          },
-          error: (e) => console.log(e.responseText),
+  if ($(inputSearch).val() == "") {
+    $(".list-movies").html("");
+  } else {
+    $.ajax({
+      url: "http://www.omdbapi.com/?apikey=386856b4&s=" + $(inputSearch).val(),
+      success: (response) => {
+        const movies = response.Search;
+        let listMovies = "";
+        movies.forEach((m) => {
+          listMovies += daftarMovies(m);
         });
-      });
-    },
-    error: (e) => console.log(e.responseText),
-  });
+        $(".list-movies").html(listMovies);
+
+        $(".detail-button").on("click", function () {
+          $.ajax({
+            url:
+              "http://www.omdbapi.com/?apikey=386856b4&i=" +
+              $(this).data("imdbid"),
+            success: (m) => {
+              const movieDetail = showMovieDetail(m);
+              $(".modal-body").html(movieDetail);
+            },
+            error: (e) => console.log(e.responseText),
+          });
+        });
+      },
+      error: (e) => console.log(e.responseText),
+    });
+  }
 });
 
 function daftarMovies(m) {
